@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/College Files/College Year 4/CS 3270/CS3270A4/app/src/main/res/layout/activity_main.xml" value="0.3625" />
+        <entry key="..\:/College Files/College Year 4/CS 3270/CS3270A4/app/src/main/res/layout/fragment_items.xml" value="0.3625" />
+        <entry key="..\:/College Files/College Year 4/CS 3270/CS3270A4/app/src/main/res/layout/fragment_tax.xml" value="0.3625" />
         <entry key="..\:/College Files/College Year 4/CS 3270/CS3270A4/app/src/main/res/layout/fragment_totals.xml" value="0.2957427536231884" />
       </map>
     </option>

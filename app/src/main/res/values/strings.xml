@@ -2,4 +2,12 @@
     <string name="app_name">CS3270A4Olson</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="total_amount">Total Amount</string>
+    <string name="money_here">Money Here</string>
+    <string name="taxamount">TaxAmount</string>
+    <string name="taxrate">TaxRate</string>
+    <string name="tax_rate">Tax Rate</string>
+    <string name="tax_amount">Tax Amount</string>
+    <string name="item_amount">Item Amount</string>
+    <string name="enter_amount">Enter Amount</string>
 </resources>

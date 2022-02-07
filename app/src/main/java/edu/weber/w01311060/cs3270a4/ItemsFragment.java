@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.math.BigDecimal;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ItemsFragment#newInstance} factory method to
@@ -38,23 +40,23 @@ public class ItemsFragment extends Fragment
     private EditText text2;
     private EditText text3;
     private EditText text4;
-    private double text1Value;
-    private double text2Value;
-    private double text3Value;
-    private double text4Value;
+    private BigDecimal text1Value;
+    private BigDecimal text2Value;
+    private BigDecimal text3Value;
+    private BigDecimal text4Value;
     private onAmountChange mCallBack;
 
     public interface onAmountChange
     {
-        void changeAmount(double one, double two, double three, double four);
+        void changeAmount(BigDecimal one, BigDecimal two, BigDecimal three, BigDecimal four);
     }
 
     public ItemsFragment()
     {
-        text1Value = 0;
-        text2Value = 0;
-        text3Value = 0;
-        text4Value = 0;
+        text1Value = new BigDecimal(0);
+        text2Value = new BigDecimal(0);
+        text3Value = new BigDecimal(0);
+        text4Value = new BigDecimal(0);
         // Required empty public constructor
     }
 
@@ -85,10 +87,10 @@ public class ItemsFragment extends Fragment
         SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor prefEdit = prefs.edit();
 
-        prefEdit.putLong("text1", Double.doubleToRawLongBits(text1Value));
-        prefEdit.putLong("text2", Double.doubleToRawLongBits(text2Value));
-        prefEdit.putLong("text3", Double.doubleToRawLongBits(text3Value));
-        prefEdit.putLong("text4", Double.doubleToRawLongBits(text4Value));
+        prefEdit.putString("text1", text1Value.toString());
+        prefEdit.putString("text2", text2Value.toString());
+        prefEdit.putString("text3", text3Value.toString());
+        prefEdit.putString("text4", text4Value.toString());
 
         prefEdit.commit();
     }
@@ -140,11 +142,6 @@ public class ItemsFragment extends Fragment
         text3 = root.findViewById(R.id.editText3);
         text4 = root.findViewById(R.id.editText4);
 
-        text1.setText(Double.toString(Double.longBitsToDouble(prefs.getLong("text1", 0))));
-        text2.setText(Double.toString(Double.longBitsToDouble(prefs.getLong("text2", 0))));
-        text3.setText(Double.toString(Double.longBitsToDouble(prefs.getLong("text3", 0))));
-        text4.setText(Double.toString(Double.longBitsToDouble(prefs.getLong("text4", 0))));
-
         TextWatcher watcher = new TextWatcher()
         {
             @Override
@@ -162,37 +159,39 @@ public class ItemsFragment extends Fragment
             @Override
             public void afterTextChanged(Editable editable)
             {
-                text1Value = 0;
-                text2Value = 0;
-                text3Value = 0;
-                text4Value = 0;
+                text1Value = new BigDecimal(0);
+                text2Value = new BigDecimal(0);
+                text3Value = new BigDecimal(0);
+                text4Value = new BigDecimal(0);
                 if(!text1.getText().toString().isEmpty())
                 {
-                    text1Value = Double.parseDouble(text1.getText().toString());
+                    text1Value = BigDecimal.valueOf(Double.parseDouble(text1.getText().toString()));
                 }
                 if(!text2.getText().toString().isEmpty())
                 {
-                    text2Value = Double.parseDouble(text2.getText().toString());
+                    text2Value = BigDecimal.valueOf(Double.parseDouble(text2.getText().toString()));
                 }
                 if(!text3.getText().toString().isEmpty())
                 {
-                    text3Value = Double.parseDouble(text3.getText().toString());
+                    text3Value = BigDecimal.valueOf(Double.parseDouble(text3.getText().toString()));
                 }
                 if(!text4.getText().toString().isEmpty())
                 {
-                    text4Value = Double.parseDouble(text4.getText().toString());
+                    text4Value = BigDecimal.valueOf(Double.parseDouble(text4.getText().toString()));
                 }
-                Log.d("Text1Change", "text1Value: " + text1Value);
-                //send to method with four parameters
                 mCallBack.changeAmount(text1Value, text2Value, text3Value, text4Value);
             }
         };
+
+        text1.setText(prefs.getString("text1", String.valueOf(0)));
+        text2.setText(prefs.getString("text2", String.valueOf(0)));
+        text3.setText(prefs.getString("text3", String.valueOf(0)));
+        text4.setText(prefs.getString("text4", String.valueOf(0)));
 
         text1.addTextChangedListener(watcher);
         text2.addTextChangedListener(watcher);
         text3.addTextChangedListener(watcher);
         text4.addTextChangedListener(watcher);
-
 
     }
 }

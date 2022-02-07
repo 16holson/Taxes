@@ -34,11 +34,11 @@ public class TotalsFragment extends Fragment
     private View root;
     private TextView totalAmount;
     private DecimalFormat format = new DecimalFormat("$00.00");
-    private double value;
+    private BigDecimal value;
 
     public TotalsFragment()
     {
-        value = 0.0;
+        value = new BigDecimal(0);
         // Required empty public constructor
     }
 
@@ -50,7 +50,7 @@ public class TotalsFragment extends Fragment
         SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor prefEdit = prefs.edit();
 
-        prefEdit.putLong("total", Double.doubleToRawLongBits(value));
+        prefEdit.putString("total", value.toString());
 
         prefEdit.commit();
     }
@@ -82,7 +82,7 @@ public class TotalsFragment extends Fragment
         totalAmount = root.findViewById(R.id.totalAmount);
         totalAmount.setText("" + format.format(value));
         SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
-        value = Double.longBitsToDouble(prefs.getLong("total", 0));
+        value = BigDecimal.valueOf(Double.parseDouble(prefs.getString("total", String.valueOf(0))));
         totalAmount.setText("" + format.format(value));
     }
 
@@ -105,7 +105,7 @@ public class TotalsFragment extends Fragment
         return root = inflater.inflate(R.layout.fragment_totals, container, false);
     }
 
-    public void updateTotal(double total)
+    public void updateTotal(BigDecimal total)
     {
         value = total;
         if(totalAmount != null)

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
@@ -41,22 +42,22 @@ public class TaxFragment extends Fragment
     private View root;
     private SeekBar seek;
     private TextView taxRate;
-    private double taxRateValue;
+    private BigDecimal taxRateValue;
     private TextView taxAmount;
-    private double taxAmountValue;
-    private double amountTotal;
+    private BigDecimal taxAmountValue;
+    private BigDecimal amountTotal;
     private onAmountUpdate mCallBack;
 
     public interface onAmountUpdate
     {
-        void updateTotal(double total);
+        void updateTotal(BigDecimal total);
     }
 
     public TaxFragment()
     {
-        taxRateValue = 0.0;
-        taxAmountValue = 0.0;
-        amountTotal = 0.0;
+        taxRateValue = new BigDecimal(0);
+        taxAmountValue = new BigDecimal(0);
+        amountTotal = new BigDecimal(0);
         // Required empty public constructor
     }
 
@@ -104,9 +105,9 @@ public class TaxFragment extends Fragment
         SharedPreferences.Editor prefEdit = prefs.edit();
 
         prefEdit.putInt("seekbar", seek.getProgress());
-        prefEdit.putLong("taxrate", Double.doubleToRawLongBits(taxRateValue));
-        prefEdit.putLong("taxamount", Double.doubleToRawLongBits(taxAmountValue));
-        prefEdit.putLong("amounttotal", Double.doubleToRawLongBits(amountTotal));
+        prefEdit.putString("taxrate", taxRateValue.toString());
+        prefEdit.putString("taxamount", taxAmountValue.toString());
+        prefEdit.putString("amounttotal", amountTotal.toString());
 
         prefEdit.commit();
     }
@@ -141,14 +142,17 @@ public class TaxFragment extends Fragment
         taxRate = root.findViewById(R.id.taxRate);
         taxAmount = root.findViewById(R.id.taxAmount);
 
+        taxRateValue = BigDecimal.valueOf(Double.parseDouble(prefs.getString("taxrate", String.valueOf(0))));
+        taxAmountValue = BigDecimal.valueOf(Double.parseDouble(prefs.getString("taxamount", String.valueOf(0))));
+        amountTotal = BigDecimal.valueOf((Double.parseDouble(prefs.getString("amounttotal", String.valueOf(0)))));
+
         seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
         {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b)
             {
-                taxRateValue = i/400.0;
+                taxRateValue = BigDecimal.valueOf(i).divide(new BigDecimal(400));
                 taxRate.setText("" + format.format(taxRateValue));
-                Log.d("Tax", "beforeUpdateAmountSlide: " + amountTotal);
                 updateAmount(amountTotal);
             }
 
@@ -164,24 +168,17 @@ public class TaxFragment extends Fragment
 
             }
         });
-
-        taxRateValue = Double.longBitsToDouble(prefs.getLong("taxrate", 0));
-        taxAmountValue = Double.longBitsToDouble(prefs.getLong("taxamount", 0));
-        amountTotal = Double.longBitsToDouble(prefs.getLong("amounttotal", 0));
-        Log.d("Tax", "Setting amountTotal: " + amountTotal);
         seek.setProgress(progress);
         taxRate.setText("" + format.format(taxRateValue));
         taxAmount.setText("" + formatN.format(taxAmountValue));
     }
 
-    public void updateAmount(double total)
+    public void updateAmount(BigDecimal total)
     {
         amountTotal = total;
-        taxAmountValue = amountTotal * taxRateValue;
-        Log.d("Tax totalAmount", "totalAmount: " + amountTotal);
-        Log.d("TaxAmountValue", "taxAmountValue: " + taxAmountValue);
+        taxAmountValue = amountTotal.multiply(taxRateValue);
         taxAmount.setText("" + formatN.format(taxAmountValue));
-        mCallBack.updateTotal(amountTotal + taxAmountValue);
+        mCallBack.updateTotal(amountTotal.add(taxAmountValue));
 
     }
 }

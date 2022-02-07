@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 
+import java.math.BigDecimal;
+
 public class MainActivity extends AppCompatActivity implements ItemsFragment.onAmountChange, TaxFragment.onAmountUpdate
 {
     private FragmentManager fm;
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements ItemsFragment.onA
     }
 
     @Override
-    public void changeAmount(double one, double two, double three, double four)
+    public void changeAmount(BigDecimal one, BigDecimal two, BigDecimal three, BigDecimal four)
     {
         if(tf == null)
         {
@@ -41,15 +43,14 @@ public class MainActivity extends AppCompatActivity implements ItemsFragment.onA
         }
         if(tf != null)
         {
-            double total = one + two + three + four;
-            tf.updateAmount(total);
+            tf.updateAmount(one.add(two).add(three).add(four));
         }
 
     }
 
 
     @Override
-    public void updateTotal(double total)
+    public void updateTotal(BigDecimal total)
     {
         if(tsf == null)
         {
